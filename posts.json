@@ -1,17 +1,18 @@
 [
   {
-    "slug": "we-lost-the-manuals",
-    "title": "We Lost the Manuals",
+    "slug": "ww3-endgame",
+    "title": "WW3: Endgame",
     "tag": "Essay",
     "date": "March 8, 2026",
-    "excerpt": "We archived the prayers. We forgot the process. Confusion isn't the glitch. It's the shield."
+    "excerpt": "Directed by The Military-Industrial Complex. Executive Produced by Legacy Media. Runtime: 4–8 years.",
+    "image": "images\\ww3-endgame.png"
   },
   {
-    "slug": "how-to-stay-with-it",
-    "title": "How to Stay With It",
+    "slug": "not-validation",
+    "title": "Not Validation",
     "tag": "Essay",
     "date": "March 8, 2026",
-    "excerpt": "Understanding does not make the world simpler. If anything, it makes it heavier. And yet, something else grows there."
+    "excerpt": "Maybe it was never about validation. Maybe it was just fear of death, trying to disguise itself as the need to be seen."
   },
   {
     "slug": "the-quiet-contract",
@@ -21,10 +22,17 @@
     "excerpt": "To begin in not knowing, to end in not knowing, and to think in between as if it might still matter."
   },
   {
-    "slug": "not-validation",
-    "title": "Not Validation",
+    "slug": "how-to-stay-with-it",
+    "title": "How to Stay With It",
     "tag": "Essay",
     "date": "March 8, 2026",
-    "excerpt": "Maybe it was never about validation. Maybe it was just fear of death, trying to disguise itself as the need to be seen."
+    "excerpt": "Understanding does not make the world simpler. If anything, it makes it heavier. And yet, something else grows there."
+  },
+  {
+    "slug": "we-lost-the-manuals",
+    "title": "We Lost the Manuals",
+    "tag": "Essay",
+    "date": "March 8, 2026",
+    "excerpt": "We archived the prayers. We forgot the process. Confusion isn't the glitch. It's the shield."
   }
 ]
