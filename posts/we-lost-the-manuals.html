@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>We Lost the Manuals — Low Light Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <nav>
+    <a href="../index.html" class="nav-logo">LLN</a>
+    <a href="../index.html" class="nav-back">← All writing</a>
+  </nav>
+  <article>
+    <div class="post-hero">
+      <div class="post-meta">
+        <span class="post-tag">Essay</span>
+        <div class="meta-dot"></div>
+        <span class="post-date-text">March 8, 2026</span>
+      </div>
+      <h1>We Lost the Manuals</h1>
+      <p class="post-lede">Confusion isn't the glitch. It's the shield.</p>
+    </div>
+    
+    <div class="post-divider">
+      <svg class="divider-flame" viewBox="0 0 48 64" fill="none"><path d="M24 62 C10 62 4 50 4 40 C4 28 12 22 16 14 C18 10 18 4 24 2 C24 2 20 14 26 18 C28 10 32 6 36 10 C40 14 44 22 44 34 C44 50 38 62 24 62Z" fill="#c8832a"/></svg>
+    </div>
+    <div class="post-body">
+      We archived the prayers. We forgot the process. We canonised stories. We erased systems. We preserved the myths. But we lost the manuals.
+
+You feel it, don't you?
+
+You look at the precision-cut stonework of ancient walls, the impossible alignment of blocks, the mastery in silence. And then you scroll through the digital swamp of slogans, filters, and performance empathy and realise: we got louder. But dumber.
+
+We know what gods they feared, but not how they built their bridges. We saved the verses, but not the blueprints. We canonised the drama, but lost the discipline.
+
+Modern life is built on hollow repetition. Rituals that mimic wisdom. Systems that no longer serve. Leaders who perform clarity while managing confusion.
+
+What we needed were maps, feedback loops, functional models. What we got were hashtags.
+
+This isn't nostalgia. It's triage.
+
+Because the systems around us aren't failing — they're fulfilling their design. Confusion isn't the glitch. It's the shield.
+    </div>
+  </article>
+  <div class="post-footer">
+    <a href="../index.html">← Back</a>
+    <span class="post-footer-title">Low Light Notes</span>
+    <span></span>
+  </div>
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+    function animateRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateRing);}
+    animateRing();
+  </script>
+</body>
+</html>
