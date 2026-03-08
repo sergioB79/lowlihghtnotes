@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Low Light Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0906;
+      --deep: #111009;
+      --ember: #c8832a;
+      --ember-dim: #7a4e18;
+      --ash: #2a2620;
+      --smoke: #4a453d;
+      --parchment: #d4c9b0;
+      --pale: #8a7f6e;
+      --cream: #f0e8d8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--parchment);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: var(--ember);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, opacity 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(200, 131, 42, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.4s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.6;
+    }
+
+    /* Flame vignette */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(200, 131, 42, 0.04) 0%, transparent 60%),
+                  radial-gradient(ellipse at 50% 100%, transparent 40%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      z-index: 2;
+    }
+
+    .flame-container {
+      position: relative;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 1.8s ease forwards 0.3s;
+    }
+
+    .flame-svg {
+      width: 48px;
+      height: 64px;
+      filter: drop-shadow(0 0 12px rgba(200, 131, 42, 0.6));
+    }
+
+    @keyframes flicker {
+      0%, 100% { transform: scaleX(1) scaleY(1) rotate(-0.5deg); filter: drop-shadow(0 0 10px rgba(200,131,42,0.5)); }
+      25% { transform: scaleX(0.97) scaleY(1.02) rotate(0.5deg); filter: drop-shadow(0 0 16px rgba(200,131,42,0.7)); }
+      50% { transform: scaleX(1.02) scaleY(0.99) rotate(-0.3deg); filter: drop-shadow(0 0 8px rgba(200,131,42,0.4)); }
+      75% { transform: scaleX(0.98) scaleY(1.01) rotate(0.4deg); filter: drop-shadow(0 0 14px rgba(200,131,42,0.65)); }
+    }
+
+    .flame-svg { animation: flicker 3s ease-in-out infinite; }
+
+    .site-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      color: var(--cream);
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 1.8s ease forwards 0.6s;
+      text-shadow: 0 0 40px rgba(200, 131, 42, 0.15);
+    }
+
+    .site-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: var(--pale);
+      letter-spacing: 0.15em;
+      margin-top: 0.75rem;
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 1.8s ease forwards 0.9s;
+    }
+
+    .divider {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--ember-dim), transparent);
+      margin: 2.5rem auto;
+      opacity: 0;
+      animation: fadeUp 1.8s ease forwards 1.1s;
+    }
+
+    .scroll-hint {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--smoke);
+      opacity: 0;
+      animation: fadeUp 1.8s ease forwards 1.4s, pulse 3s ease-in-out infinite 2s;
+      position: absolute;
+      bottom: 2.5rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: normal;
+    }
+
+    nav::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,9,6,0.9), transparent);
+      z-index: -1;
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.3em;
+      color: var(--pale);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-logo:hover { color: var(--ember); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--pale);
+      text-decoration: none;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--ember);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Posts section */
+    main {
+      position: relative;
+      z-index: 2;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 6rem 2rem 8rem;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--ember-dim);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--ash), transparent);
+    }
+
+    /* Post cards */
+    .post-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .post-item {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 0 2rem;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--ash);
+      text-decoration: none;
+      position: relative;
+      transition: background 0.4s;
+      cursor: none;
+    }
+
+    .post-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      right: -2rem;
+      top: 0;
+      bottom: 0;
+      background: rgba(200, 131, 42, 0.03);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .post-item:hover::before { opacity: 1; }
+
+    .post-item:first-child { border-top: 1px solid var(--ash); }
+
+    .post-date {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--smoke);
+      text-align: right;
+      padding-top: 0.4rem;
+      line-height: 1.4;
+      transition: color 0.3s;
+    }
+
+    .post-item:hover .post-date { color: var(--ember-dim); }
+
+    .post-content { position: relative; }
+
+    .post-tag {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ember-dim);
+      margin-bottom: 0.5rem;
+      display: block;
+      transition: color 0.3s;
+    }
+
+    .post-item:hover .post-tag { color: var(--ember); }
+
+    .post-title {
+      font-family: 'IM Fell English', Georgia, serif;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      transition: color 0.3s;
+    }
+
+    .post-item:hover .post-title { color: #fff; }
+
+    .post-excerpt {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--pale);
+      line-height: 1.6;
+    }
+
+    .post-arrow {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%) translateX(10px);
+      opacity: 0;
+      color: var(--ember);
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .post-item:hover .post-arrow {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    /* About section */
+    .about-section {
+      margin-top: 8rem;
+      padding-top: 4rem;
+      border-top: 1px solid var(--ash);
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 3rem;
+      align-start: start;
+    }
+
+    .about-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--ember-dim);
+      padding-top: 0.3rem;
+    }
+
+    .about-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      color: var(--pale);
+      line-height: 1.8;
+    }
+
+    .about-text p + p { margin-top: 1rem; }
+
+    .about-text em {
+      color: var(--parchment);
+      font-style: italic;
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 3rem 2rem 4rem;
+      border-top: 1px solid var(--ash);
+    }
+
+    .footer-flame {
+      width: 20px;
+      height: 28px;
+      margin: 0 auto 1.5rem;
+      opacity: 0.4;
+      animation: flicker 4s ease-in-out infinite;
+    }
+
+    .footer-text {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      color: var(--smoke);
+      text-transform: uppercase;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      color: var(--smoke);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover { color: var(--ember); }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      .post-item { grid-template-columns: 45px 1fr; gap: 0 1rem; }
+      .about-section { grid-template-columns: 1fr; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">LLN</a>
+    <ul class="nav-links">
+      <li><a href="#writing">Writing</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="https://medium.com/@lowlightnotes" target="_blank">Medium</a></li>
+    </ul>
+  </nav>
+
+  <header>
+    <div class="flame-container">
+      <svg class="flame-svg" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="fg" cx="50%" cy="80%" r="60%">
+            <stop offset="0%" stop-color="#ffecd0"/>
+            <stop offset="40%" stop-color="#f0a030"/>
+            <stop offset="100%" stop-color="#8b3a0a" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="fg2" cx="50%" cy="70%" r="50%">
+            <stop offset="0%" stop-color="#fff5e0" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#f0a030" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <path d="M24 62 C10 62 4 50 4 40 C4 28 12 22 16 14 C18 10 18 4 24 2 C24 2 20 14 26 18 C28 10 32 6 36 10 C40 14 44 22 44 34 C44 50 38 62 24 62Z" fill="url(#fg)"/>
+        <path d="M24 55 C16 55 13 46 14 38 C15 32 19 28 22 24 C22 32 26 34 28 30 C32 36 31 46 24 55Z" fill="url(#fg2)"/>
+      </svg>
+    </div>
+
+    <h1 class="site-title">Low Light Notes</h1>
+    <p class="site-subtitle">written when it needs to be said</p>
+    <div class="divider"></div>
+    <span class="scroll-hint">Read</span>
+  </header>
+
+  <main id="writing">
+    <div class="section-label">Recent writing</div>
+
+    <div class="post-list">
+
+      <a href="posts/we-lost-the-manuals.html" class="post-item">
+        <div class="post-date">MAR<br>08<br>2026</div>
+        <div class="post-content">
+          <span class="post-tag">Essay</span>
+          <h2 class="post-title">We Lost the Manuals</h2>
+          <p class="post-excerpt">We archived the prayers. We forgot the process. Confusion isn't the glitch. It's the shield.</p>
+          <span class="post-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="posts/how-to-stay-with-it.html" class="post-item">
+        <div class="post-date">MAR<br>08<br>2026</div>
+        <div class="post-content">
+          <span class="post-tag">Essay</span>
+          <h2 class="post-title">How to Stay With It</h2>
+          <p class="post-excerpt">Understanding does not make the world simpler. If anything, it makes it heavier. And yet, something else grows there.</p>
+          <span class="post-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="posts/the-quiet-contract.html" class="post-item">
+        <div class="post-date">MAR<br>08<br>2026</div>
+        <div class="post-content">
+          <span class="post-tag">Essay</span>
+          <h2 class="post-title">The Quiet Contract</h2>
+          <p class="post-excerpt">To begin in not knowing, to end in not knowing, and to think in between as if it might still matter.</p>
+          <span class="post-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="posts/not-validation.html" class="post-item">
+        <div class="post-date">MAR<br>08<br>2026</div>
+        <div class="post-content">
+          <span class="post-tag">Essay</span>
+          <h2 class="post-title">Not Validation</h2>
+          <p class="post-excerpt">Maybe it was never about validation. Maybe it was just fear of death, trying to disguise itself as the need to be seen.</p>
+          <span class="post-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="about-section" id="about">
+      <div class="about-label">About</div>
+      <div class="about-text">
+        <p>Some things don't need a reason to be written. They just need to be said — quietly, at the wrong hour, when the light is low enough to be honest.</p>
+        <p><em>Essays that wander. Poems that don't apologize. Logic applied to things logic wasn't meant for.</em></p>
+        <p>No niche. No schedule. No algorithm to please.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <svg class="footer-flame" viewBox="0 0 48 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M24 62 C10 62 4 50 4 40 C4 28 12 22 16 14 C18 10 18 4 24 2 C24 2 20 14 26 18 C28 10 32 6 36 10 C40 14 44 22 44 34 C44 50 38 62 24 62Z" fill="#c8832a"/>
+    </svg>
+    <p class="footer-text">Low Light Notes &mdash; Est. 2026</p>
+    <ul class="footer-links">
+      <li><a href="https://medium.com/@lowlightnotes" target="_blank">Medium</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+        ring.style.width = '48px';
+        ring.style.height = '48px';
+        ring.style.borderColor = 'rgba(200,131,42,0.7)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        ring.style.width = '28px';
+        ring.style.height = '28px';
+        ring.style.borderColor = 'rgba(200,131,42,0.4)';
+      });
+    });
+  </script>
+
+</body>
+</html>
