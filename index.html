@@ -488,48 +488,8 @@
   <main id="writing">
     <div class="section-label">Recent writing</div>
 
-    <div class="post-list">
-
-      <a href="posts/we-lost-the-manuals.html" class="post-item">
-        <div class="post-date">MAR<br>08<br>2026</div>
-        <div class="post-content">
-          <span class="post-tag">Essay</span>
-          <h2 class="post-title">We Lost the Manuals</h2>
-          <p class="post-excerpt">We archived the prayers. We forgot the process. Confusion isn't the glitch. It's the shield.</p>
-          <span class="post-arrow">→</span>
-        </div>
-      </a>
-
-      <a href="posts/how-to-stay-with-it.html" class="post-item">
-        <div class="post-date">MAR<br>08<br>2026</div>
-        <div class="post-content">
-          <span class="post-tag">Essay</span>
-          <h2 class="post-title">How to Stay With It</h2>
-          <p class="post-excerpt">Understanding does not make the world simpler. If anything, it makes it heavier. And yet, something else grows there.</p>
-          <span class="post-arrow">→</span>
-        </div>
-      </a>
-
-      <a href="posts/the-quiet-contract.html" class="post-item">
-        <div class="post-date">MAR<br>08<br>2026</div>
-        <div class="post-content">
-          <span class="post-tag">Essay</span>
-          <h2 class="post-title">The Quiet Contract</h2>
-          <p class="post-excerpt">To begin in not knowing, to end in not knowing, and to think in between as if it might still matter.</p>
-          <span class="post-arrow">→</span>
-        </div>
-      </a>
-
-      <a href="posts/not-validation.html" class="post-item">
-        <div class="post-date">MAR<br>08<br>2026</div>
-        <div class="post-content">
-          <span class="post-tag">Essay</span>
-          <h2 class="post-title">Not Validation</h2>
-          <p class="post-excerpt">Maybe it was never about validation. Maybe it was just fear of death, trying to disguise itself as the need to be seen.</p>
-          <span class="post-arrow">→</span>
-        </div>
-      </a>
-
+    <div class="post-list" id="post-list">
+      <p style="color:var(--smoke);font-style:italic;padding:2rem 0;">Loading posts...</p>
     </div>
 
     <div class="about-section" id="about">
@@ -553,6 +513,33 @@
   </footer>
 
   <script>
+    // Load posts from posts.json
+    fetch('posts.json')
+      .then(r => r.json())
+      .then(posts => {
+        const list = document.getElementById('post-list');
+        if (!posts.length) { list.innerHTML = '<p style="color:var(--smoke);font-style:italic;padding:2rem 0;">No posts yet.</p>'; return; }
+        list.innerHTML = posts.map(p => {
+          const d = new Date(p.date);
+          const mon = d.toLocaleString('en', {month:'short'}).toUpperCase();
+          const day = d.getDate();
+          const yr  = d.getFullYear();
+          return `
+          <a href="posts/${p.slug}.html" class="post-item">
+            <div class="post-date">${mon}<br>${day}<br>${yr}</div>
+            <div class="post-content">
+              <span class="post-tag">${p.tag}</span>
+              <h2 class="post-title">${p.title}</h2>
+              <p class="post-excerpt">${p.excerpt}</p>
+              <span class="post-arrow">→</span>
+            </div>
+          </a>`;
+        }).join('');
+      })
+      .catch(() => {
+        document.getElementById('post-list').innerHTML = '<p style="color:var(--smoke);font-style:italic;padding:2rem 0;">posts.json not found.</p>';
+      });
+
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursorRing');
     let mx = 0, my = 0, rx = 0, ry = 0;
