@@ -1,0 +1,293 @@
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #0a0906;
+  --deep: #111009;
+  --ember: #c8832a;
+  --ember-dim: #7a4e18;
+  --ash: #2a2620;
+  --smoke: #4a453d;
+  --parchment: #d4c9b0;
+  --pale: #8a7f6e;
+  --cream: #f0e8d8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--parchment);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  line-height: 1.8;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.6;
+}
+
+.cursor {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: var(--ember);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 28px; height: 28px;
+  border: 1px solid rgba(200, 131, 42, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: transform 0.4s ease, width 0.3s, height 0.3s;
+  transform: translate(-50%, -50%);
+}
+
+/* Nav */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+}
+
+nav::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10,9,6,0.95), transparent);
+  z-index: -1;
+}
+
+.nav-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  color: var(--pale);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-logo:hover { color: var(--ember); }
+
+.nav-back {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  color: var(--pale);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-back:hover { color: var(--cream); }
+
+/* Post hero */
+.post-hero {
+  padding: 14rem 2rem 4rem;
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 1.2s ease forwards 0.2s;
+}
+
+.post-tag {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ember-dim);
+}
+
+.meta-dot {
+  width: 3px; height: 3px;
+  background: var(--smoke);
+  border-radius: 50%;
+}
+
+.post-date-text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--smoke);
+}
+
+.post-hero h1 {
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 1.2s ease forwards 0.4s;
+}
+
+.post-lede {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--pale);
+  line-height: 1.7;
+  opacity: 0;
+  animation: fadeUp 1.2s ease forwards 0.6s;
+}
+
+/* Cover image */
+.post-cover {
+  max-width: 780px;
+  margin: 0 auto 0;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeUp 1.2s ease forwards 0.7s;
+}
+
+.post-cover img {
+  width: 100%;
+  max-height: 520px;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
+  filter: brightness(0.92);
+}
+
+.post-cover-caption {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--smoke);
+  text-align: center;
+  margin-top: 0.75rem;
+  text-transform: uppercase;
+}
+
+/* Divider */
+.post-divider {
+  max-width: 680px;
+  margin: 2.5rem auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 1.2s ease forwards 0.8s;
+  position: relative;
+  z-index: 2;
+}
+
+.post-divider::before,
+.post-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ash);
+}
+
+.divider-flame {
+  width: 16px; height: 22px;
+  opacity: 0.5;
+}
+
+/* Body */
+.post-body {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 2rem 8rem;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeUp 1.2s ease forwards 1s;
+}
+
+.post-body p {
+  margin-bottom: 1.8rem;
+  color: var(--parchment);
+}
+
+.post-body p:first-child::first-letter {
+  font-family: 'Cinzel', serif;
+  font-size: 4rem;
+  float: left;
+  line-height: 0.8;
+  margin: 0.1em 0.1em 0 0;
+  color: var(--ember);
+}
+
+.post-body em { color: var(--cream); font-style: italic; }
+.post-body strong { color: var(--cream); font-weight: 400; letter-spacing: 0.03em; }
+
+.post-body blockquote {
+  border-left: 1px solid var(--ember-dim);
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: var(--pale);
+}
+
+/* Footer nav */
+.post-footer {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+  border-top: 1px solid var(--ash);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.post-footer a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  color: var(--pale);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.post-footer a:hover { color: var(--ember); }
+
+.post-footer-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  color: var(--smoke);
+  text-align: center;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  nav { padding: 1.2rem 1.5rem; }
+  .post-hero { padding: 10rem 1.5rem 4rem; }
+  .post-body { padding: 0 1.5rem 6rem; }
+  .post-cover { padding: 0 1.5rem; }
+}
